@@ -66,3 +66,11 @@ for module_name, module in QT_BINDING_MODULES.items():
     del module
 
 del sys
+
+import os
+from .QtGui import QIcon
+current_theme_path = QIcon.themeSearchPaths()
+conda_path = os.environ['CONDA_PREFIX']
+QIcon.setThemeSearchPaths(current_theme_path + [os.path.join(conda_path, 'share/icons/')])
+QIcon.setThemeName('Adwaita')
+del os
