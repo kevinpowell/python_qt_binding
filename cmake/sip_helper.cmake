@@ -96,6 +96,7 @@ function(build_sip_binding PROJECT_NAME SIP_FILE)
         foreach(_x ${INCLUDE_DIRS})
           set(SIP_INCLUDE_DIRS "${SIP_INCLUDE_DIRS},\"${_x}\"")
         endforeach()
+        #TODO : add the Qt include dirs here (currently hardcoded in pyproject.toml.in)
         string(REGEX REPLACE "^," "" SIP_INCLUDE_DIRS ${SIP_INCLUDE_DIRS})
 
         # SIP expects the libraries WITHOUT the file extension.
@@ -122,9 +123,19 @@ function(build_sip_binding PROJECT_NAME SIP_FILE)
             if(NOT "${out2}" EQUAL -1)
               message(STATUS "IGNORE: ${_x_NAME_NOPREFIX}")
             else()
+              STRING(FIND "${_x_NAME_NOPREFIX}" ".so" p1)
+              if(NOT "${p1}" EQUAL -1)
+               message(WARNING "found bad lib: ${_x_NAME_NOPREFIX}")
+               STRING(SUBSTRING "${_x_NAME_NOPREFIX}" 0 ${p1} _x_NAME_NOPREFIX)
+              endif()
               set(SIP_LIBARIES "${SIP_LIBARIES},\"${_x_NAME_NOPREFIX}\"")
             endif()
           else()
+              STRING(FIND "${_x_NAME_NOPREFIX}" ".so" p1)
+              if(NOT "${p1}" EQUAL -1)
+               message(WARNING "found bad lib: ${_x_NAME_NOPREFIX}")
+               STRING(SUBSTRING "${_x_NAME_NOPREFIX}" 0 ${p1} _x_NAME_NOPREFIX)
+              endif()
             set(SIP_LIBARIES "${SIP_LIBARIES},\"${_x_NAME_NOPREFIX}\"")
             set(SIP_LIBRARY_DIRS "${SIP_LIBRARY_DIRS},\"${_x_DIR}\"")
           endif()
@@ -136,9 +147,11 @@ function(build_sip_binding PROJECT_NAME SIP_FILE)
         endforeach()
         string(REGEX REPLACE "^," "" SIP_LIBRARY_DIRS ${SIP_LIBRARY_DIRS})
         message(WARNING "test lib dir: ${SIP_LIBRARY_DIRS}")
+        message(WARNING "SIP FILE: ${SIP_FILE}")
+        message(WARNING "sip library dir: ${sip_LIBRARY_DIR}")
         # TODO:
-        #   I don't know what to do about LDFLAGS_OTHER
-        #   what's the equivalent construct in sip5?
+        #   I don't know what to do about LDFLAGS_OTHER: what's the equivalent construct in sip5?
+        #   location of Qt sip bindings are hardcoded in pyproject.toml.in: discover the paths here instead
 
         configure_file(
             ${__PYTHON_QT_BINDING_SIP_HELPER_DIR}/pyproject.toml.in

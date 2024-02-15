@@ -1,0 +1,21 @@
+# Specify sip v6 as the build system for the package.
+[build-system]
+requires = ["sip >=6, <7"]
+build-backend = "sipbuild.api"
+
+# Specify the PEP 621 metadata for the project.
+[project]
+name = "@PROJECT_NAME@"
+
+[tool.sip.project]
+sip-files-dir = "@SIP_FILES_DIR@"
+sip-include-dirs = ["/usr/lib/python3.11/site-packages/PyQt5/bindings"]
+abi-version = "12.9"
+
+# Configure the building of the fib bindings.
+[tool.sip.bindings.@PROJECT_NAME@]
+include-dirs = [@SIP_INCLUDE_DIRS@,"/usr/include/qt","/usr/include/qt/QtCore","/usr/include/qt/QtGui","/usr/include/qt/QtWidgets"]
+libraries = [@SIP_LIBARIES@]
+library-dirs = ["..",@SIP_LIBRARY_DIRS@]
+sip-file = "@SIP_FILE@"
+
