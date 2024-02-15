@@ -1,3 +1,10 @@
+HEADS UP -- this is a hacked version.  I needed to build ros2-humble on an up-to-date Arch Linux.
+The old build for this module used SIP v4 which is way out of date. I found Tobias Fischer's WIP
+to convert to SIP v6 and started hacking on it.
+This hacked version works for me.  Probably won't work for anyone else.  I wasted two full days on this
+idiotic side-quest, so I won't be putting any effort into making my hacks 'look nice' or any other crap
+like that.
+
 # python_qt_binding
 
 This stack provides Python bindings for Qt.
