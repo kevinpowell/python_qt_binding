@@ -151,6 +151,7 @@ function(build_sip_binding PROJECT_NAME SIP_FILE)
         message(WARNING "sip library dir: ${sip_LIBRARY_DIR}")
         # TODO:
         #   I don't know what to do about LDFLAGS_OTHER: what's the equivalent construct in sip5?
+        #      KLP: this may be extra-link-args in pyproject.toml.in
         #   location of Qt sip bindings are hardcoded in pyproject.toml.in: discover the paths here instead
 
         configure_file(
@@ -158,8 +159,9 @@ function(build_sip_binding PROJECT_NAME SIP_FILE)
             ${sip_BINARY_DIR}/sip/pyproject.toml
         )
         add_custom_command(
-            OUTPUT ${sip_LIBRARY_DIR}/lib${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}
+            OUTPUT ${sip_LIBRARY_DIR}/lib${PROJECT_NAME}.cpython-311-x86_64-linux-gnu${CMAKE_SHARED_LIBRARY_SUFFIX}
             COMMAND ${Python3_EXECUTABLE} -m pip install . --target ${sip_LIBRARY_DIR} --no-deps --verbose --upgrade
+            COMMAND cp -f ${sip_LIBRARY_DIR}/lib${PROJECT_NAME}.cpython-311-x86_64-linux-gnu${CMAKE_SHARED_LIBRARY_SUFFIX} ${sip_LIBRARY_DIR}/lib${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}
             DEPENDS ${sip_SIP_CONFIGURE} ${SIP_FILE} ${sip_DEPENDS}
             WORKING_DIRECTORY ${sip_BINARY_DIR}/sip
             COMMENT "Running SIP-build generator for ${PROJECT_NAME} Python bindings..."
@@ -196,7 +198,7 @@ function(build_sip_binding PROJECT_NAME SIP_FILE)
     endif()
 
     add_custom_target(lib${PROJECT_NAME} ALL
-        DEPENDS ${sip_LIBRARY_DIR}/lib${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}
+        DEPENDS ${sip_LIBRARY_DIR}/lib${PROJECT_NAME}.cpython-311-x86_64-linux-gnu${CMAKE_SHARED_LIBRARY_SUFFIX}
         COMMENT "Meta target for ${PROJECT_NAME} Python bindings..."
     )
     add_dependencies(lib${PROJECT_NAME} ${sip_DEPENDENCIES})
