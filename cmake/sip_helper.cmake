@@ -160,6 +160,7 @@ function(build_sip_binding PROJECT_NAME SIP_FILE)
         )
         add_custom_command(
             OUTPUT ${sip_LIBRARY_DIR}/lib${PROJECT_NAME}.cpython-311-x86_64-linux-gnu${CMAKE_SHARED_LIBRARY_SUFFIX}
+            # we just made pyproject.toml, so 'pip install' will invoke sip-build/sip-install
             COMMAND ${Python3_EXECUTABLE} -m pip install . --target ${sip_LIBRARY_DIR} --no-deps --verbose --upgrade
             COMMAND cp -f ${sip_LIBRARY_DIR}/lib${PROJECT_NAME}.cpython-311-x86_64-linux-gnu${CMAKE_SHARED_LIBRARY_SUFFIX} ${sip_LIBRARY_DIR}/lib${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}
             DEPENDS ${sip_SIP_CONFIGURE} ${SIP_FILE} ${sip_DEPENDS}
